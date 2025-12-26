@@ -2,7 +2,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const Otp = require("../models/Otp");
+const Otp = require("../models/OTP");
 // const { sendSms } = require("../utils/smsSender");
 
 const OTP_EXPIRES_MINUTES = parseInt(
