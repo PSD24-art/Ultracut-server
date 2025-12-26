@@ -92,12 +92,15 @@ exports.verifyOtp = async (req, res) => {
 
     // Create JWT
     const token = signJwt({ id: user._id, phone: user.phone });
+    const isProd = process.env.NODE_ENV === "production";
+
     const cookieOpts = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
       maxAge: 1000 * 60 * 60 * 24 * 7,
     };
+
     res.cookie("token", token, cookieOpts);
 
     return res.json({
