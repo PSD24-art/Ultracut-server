@@ -8,5 +8,6 @@ const userCtrl = require("../controllers/userController");
 userRouter.post("/profile", authMiddleware, userCtrl.userProfile);
 //complete profile
 userRouter.post("/complete-profile", authMiddleware, userCtrl.completeProfile);
+userRouter.post("/address", authMiddleware, userCtrl.addAddress);
 
 module.exports = userRouter;
