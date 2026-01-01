@@ -107,12 +107,7 @@ exports.verifyOtp = async (req, res) => {
       success: true,
       new: isNewUser,
       profileCompleted: user.profileCompleted,
-      user: {
-        id: user._id,
-        name: user.name,
-        phone: user.phone,
-        email: user.email,
-      },
+      user: user,
     });
   } catch (err) {
     console.error("verifyOtpErr", err);

@@ -10,7 +10,8 @@ const authRouter = require("./routes/authRouter");
 const userRouter = require("./routes/userRouter");
 const authMiddleware = require("./middleware/auth");
 const Product = require("./models/Products");
-
+const orderRouter = require("./routes/orderRouter");
+const paymentRouter = require("./routes/payment");
 const app = express();
 app.use(
   cors({
@@ -33,7 +34,8 @@ mongoose
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
-
+app.use("/api/order", orderRouter);
+app.use("/payment", paymentRouter);
 app.get("/api/products", async (req, res) => {
   const allProducts = await Product.find();
   if (allProducts.length > 1) {

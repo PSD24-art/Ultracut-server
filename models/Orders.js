@@ -13,12 +13,12 @@ const orderItemSchema = new Schema({
 
 const orderSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  phone: { type: String, required: true }, // denormalized for quick lookup
+  phone: { type: String, required: true },
   items: [orderItemSchema],
   subtotal: Number,
-  shipping: { type: Number, default: 0 },
+  shipping: { type: Number, default: 100 },
   total: Number,
-  paymentMethod: { type: String, default: "razorpay" },
+  paymentMethod: { type: String },
   paymentStatus: { type: String, default: "pending" },
   paymentMeta: Schema.Types.Mixed,
   shippingAddress: Schema.Types.Mixed,
