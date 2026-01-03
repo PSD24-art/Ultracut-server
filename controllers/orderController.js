@@ -1,5 +1,5 @@
 const Order = require("../models/Orders");
-const PRODUCTS = require("../data/Products");
+const PRODUCTS = require("../data/products");
 const { createPhonePePayment } = require("../services/phonepe.service");
 
 exports.createOrder = async (req, res) => {
