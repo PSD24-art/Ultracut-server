@@ -3,22 +3,22 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const JWT_SECRET = process.env.JWT_SECRET || "replace_me";
 
-const authMiddleware = async (req, res, next) => {
+function authMiddleware(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ message: "Missing token" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
   try {
-    const token =
-      req.cookies?.token ||
-      (req.headers.authorization && req.headers.authorization.split(" ")[1]);
-    if (!token) return res.status(401).json({ message: "Unauthenticated" });
-    const payload = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(payload.id).select("-__v");
-    if (!user) return res.status(401).json({ message: "User not found" });
-    req.user = user;
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
     next();
   } catch (err) {
-    console.error("auth error", err);
-    return res.status(401).json({ message: "Invalid or expired token" });
+    return res.status(401).json({ message: "Invalid token" });
   }
-};
+}
 
 // exports.authLight = (req, res, next) => {
 //   try {

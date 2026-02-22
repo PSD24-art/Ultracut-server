@@ -7,7 +7,7 @@ const Otp = require("../models/OTP");
 
 const OTP_EXPIRES_MINUTES = parseInt(
   process.env.OTP_EXPIRES_MINUTES || "10",
-  10
+  10,
 );
 const JWT_SECRET = process.env.JWT_SECRET || "replace_me";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
@@ -52,12 +52,14 @@ exports.sendOtp = async (req, res) => {
 exports.verifyOtp = async (req, res) => {
   try {
     const { phone, otp } = req.body;
-    if (!phone || !otp)
+    if (!phone || !otp) {
       return res.status(400).json({ message: "Phone & OTP required" });
+    }
 
     const otpDoc = await Otp.findOne({ phone });
-    if (!otpDoc)
+    if (!otpDoc) {
       return res.status(400).json({ message: "OTP not found or expired" });
+    }
 
     if (new Date() > otpDoc.expiresAt) {
       await Otp.deleteOne({ phone });
@@ -66,20 +68,17 @@ exports.verifyOtp = async (req, res) => {
 
     const match = await bcrypt.compare(otp, otpDoc.otpHash);
     if (!match) {
-      otpDoc.attempts = (otpDoc.attempts || 0) + 1;
-      await otpDoc.save();
       return res.status(400).json({ message: "Invalid OTP" });
     }
 
-    // OTP matches
     let user = await User.findOne({ phone });
-
     let isNewUser = false;
+
     if (!user) {
       user = await User.create({
         phone,
         lastLoginAt: new Date(),
-        profileCompleted: false, // important for your new flow
+        profileCompleted: false,
       });
       isNewUser = true;
     } else {
@@ -87,27 +86,24 @@ exports.verifyOtp = async (req, res) => {
       await user.save();
     }
 
-    // Delete OTP document
     await Otp.deleteOne({ phone });
 
-    // Create JWT
-    const token = signJwt({ id: user._id, phone: user.phone });
-    const isProd = process.env.NODE_ENV === "production";
+    // 🔐 CREATE JWT
+    const token = signJwt({
+      id: user._id,
+      phone: user.phone,
+    });
 
-    const cookieOpts = {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "none" : "lax",
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    };
+    // 🔥 SEND JWT IN HEADER (CORRECT)
+    res.setHeader("Authorization", `Bearer ${token}`);
 
-    res.cookie("token", token, cookieOpts);
-
+    // 🔥 ALSO SEND IN BODY
     return res.json({
       success: true,
+      token,
       new: isNewUser,
       profileCompleted: user.profileCompleted,
-      user: user,
+      user,
     });
   } catch (err) {
     console.error("verifyOtpErr", err);
