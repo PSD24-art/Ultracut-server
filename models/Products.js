@@ -1,6 +1,5 @@
 // models/product.js
 const mongoose = require("mongoose");
-const { products } = require("../rawProducts");
 const { Schema } = mongoose;
 
 // require("dotenv").config({ path: "../.env" });
