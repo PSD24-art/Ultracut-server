@@ -36,7 +36,7 @@ app.use("/api/user", userRouter);
 app.use("/api/order", orderRouter);
 app.use("/payment", paymentRouter);
 app.get("/api/test", (req, res) => {
-  res.json({ message: "Only Test working success" });
+  res.json({ message: "This would be the final test message" });
 });
 app.get("/api/products", async (req, res) => {
   // console.log(typeof Product);
