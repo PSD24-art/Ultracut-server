@@ -35,7 +35,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/order", orderRouter);
 app.use("/payment", paymentRouter);
-app.get("/api/test", (req, res) => {
+app.get("/test", (req, res) => {
   res.json({ message: "Test working success" });
 });
 app.get("/api/products", async (req, res) => {
