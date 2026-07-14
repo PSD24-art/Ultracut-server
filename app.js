@@ -11,13 +11,16 @@ const authMiddleware = require("./middleware/auth");
 const Product = require("./models/Products");
 const orderRouter = require("./routes/orderRouter");
 const paymentRouter = require("./routes/payment");
+const User = require("./models/User");
 const app = express();
+
 app.use(
   cors({
     origin: ["http://localhost:5173", "https://ultracut-client.onrender.com"],
     credentials: true,
-  })
+  }),
 );
+
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,6 +38,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/order", orderRouter);
 app.use("/payment", paymentRouter);
+
 app.get("/api/products", async (req, res) => {
   const allProducts = await Product.find();
   if (allProducts.length > 1) {
@@ -45,10 +49,15 @@ app.get("/api/products", async (req, res) => {
 });
 
 // /me route
-app.get("/api/user/me", authMiddleware, (req, res) => {
-  res.json({ user: req.user });
+app.get("/api/user/me", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    res.json({ user: user });
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 app.listen(PORT, () =>
-  console.log(`Server is running on http://localhost:${PORT}`)
+  console.log(`Server is running on http://localhost:${PORT}`),
 );
