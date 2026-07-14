@@ -6,6 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "replace_me";
 function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
+    console.log("Missing token");
     return res.status(401).json({ message: "Missing token" });
   }
 
