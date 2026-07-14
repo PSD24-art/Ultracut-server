@@ -38,13 +38,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/order", orderRouter);
 app.use("/payment", paymentRouter);
-<<<<<<< HEAD
 
-=======
-app.get("/api/test", (req, res) => {
-  res.json({ message: "This would be the final test message" });
-});
->>>>>>> ea368db06275dbf664d6eaa3649b1b1ddbf2f029
 app.get("/api/products", async (req, res) => {
   // console.log(typeof Product);
   const allProducts = await Product.find();
